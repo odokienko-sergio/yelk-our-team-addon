@@ -9,7 +9,7 @@
  */
 
 if (!defined('ABSPATH')) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 define('YELK_OT_VERSION', '1.0');
@@ -17,7 +17,6 @@ define('YELK_OT_PATH', plugin_dir_path(__FILE__));
 define('YELK_OT_URL', plugin_dir_url(__FILE__));
 define('YELK_OT_INC_PATH', YELK_OT_PATH . 'inc/');
 
-// Include the main addon class
 require YELK_OT_PATH . 'inc/class-yelk-our-team-addon.php';
 
 if (class_exists('Yelk_Our_Team_Addon')) {

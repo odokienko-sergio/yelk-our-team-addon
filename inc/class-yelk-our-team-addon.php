@@ -22,10 +22,8 @@ if (!class_exists('Yelk_Our_Team_Addon')) {
 
 		public function register_our_team_widget()
 		{
-			// Include the widget file
 			require_once(YELK_OT_INC_PATH . 'widgets/our-team-widget.php');
 
-			// Register the widget
 			\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \Elementor_Our_Team_Widget());
 		}
 	}
