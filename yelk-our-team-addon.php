@@ -39,5 +39,3 @@ register_deactivation_hook(
 		'deactivation',
 	)
 );
-
-

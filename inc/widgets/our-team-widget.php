@@ -31,35 +31,35 @@ class Elementor_Our_Team_Widget extends \Elementor\Widget_Base
 			'content_section',
 			[
 				'label' => esc_html__('Our Team Items', 'yelk-our-team-addon'),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 			]
 		);
 
 		$this->add_control(
 			'team_members',
 			[
-				'label' => esc_html__('Team Members', 'yelk-our-team-addon'),
-				'type' => \Elementor\Controls_Manager::REPEATER,
+				'label'  => esc_html__('Team Members', 'yelk-our-team-addon'),
+				'type'   => \Elementor\Controls_Manager::REPEATER,
 				'fields' => [
 					[
-						'name' => 'member_Image',
-						'label' => esc_html__( 'Choose Image', 'textdomain' ),
-						'type' => \Elementor\Controls_Manager::MEDIA,
+						'name'    => 'member_Image',
+						'label'   => esc_html__('Choose Image', 'textdomain'),
+						'type'    => \Elementor\Controls_Manager::MEDIA,
 						'default' => [
 							'url' => \Elementor\Utils::get_placeholder_image_src(),
 						],
 					],
 					[
-						'name' => 'member_text',
-						'label' => esc_html__('Text', 'yelk-our-team-addon'),
-						'type' => \Elementor\Controls_Manager::TEXT,
+						'name'    => 'member_text',
+						'label'   => esc_html__('Text', 'yelk-our-team-addon'),
+						'type'    => \Elementor\Controls_Manager::TEXT,
 						'default' => esc_html__('Team Member', 'yelk-our-team-addon'),
 					],
 				],
-				'default' => [
+				'default'     => [
 					[
 						'member_image' => '',
-						'member_text' => esc_html__('Team Member', 'yelk-our-team-addon'),
+						'member_text'  => esc_html__('Team Member', 'yelk-our-team-addon'),
 					],
 				],
 				'title_field' => '{{{ member_text }}}',
@@ -72,67 +72,88 @@ class Elementor_Our_Team_Widget extends \Elementor\Widget_Base
 			'style_section',
 			[
 				'label' => esc_html__('Style', 'yelk-our-team-addon'),
-				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+				'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
 			]
 		);
 
-		$this->add_control(
-			'number_of_blocks',
+		$this->add_responsive_control(
+			'quantity',
 			[
-				'label' => esc_html__('Number of Blocks', 'yelk-our-team-addon'),
-				'type' => \Elementor\Controls_Manager::NUMBER,
-				'default' => 1,
-			]
-		);
-
-		$this->add_control(
-			'blocks_per_row_desktop',
-			[
-				'label' => esc_html__('Blocks Per Row (Desktop)', 'yelk-our-team-addon'),
-				'type' => \Elementor\Controls_Manager::NUMBER,
-				'default' => 4,
-			]
-		);
-
-		$this->add_control(
-			'blocks_per_row_tablet',
-			[
-				'label' => esc_html__('Blocks Per Row (Tablet)', 'yelk-our-team-addon'),
-				'type' => \Elementor\Controls_Manager::NUMBER,
-				'default' => 3,
-			]
-		);
-
-		$this->add_control(
-			'blocks_per_row_mobile',
-			[
-				'label' => esc_html__('Blocks Per Row (Mobile)', 'yelk-our-team-addon'),
-				'type' => \Elementor\Controls_Manager::NUMBER,
-				'default' => 2,
-			]
-		);
-
-		$this->add_control(
-			'use_slider',
-			[
-				'label' => esc_html__('Use Slider', 'yelk-our-team-addon'),
-				'type' => \Elementor\Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Yes', 'yelk-our-team-addon'),
-				'label_off' => esc_html__('No', 'yelk-our-team-addon'),
-				'default' => 'no',
+				'label'      => esc_html__('Quantity', 'yelk-our-team-addon'),
+				'type'       => \Elementor\Controls_Manager::NUMBER,
+				'default'    => 6,
+				'selectors'  => [
+					'{{WRAPPER}} .our-team-widget .team-row' => 'grid-template-columns: repeat({{SIZE}}, 1fr);',
+				],
+				'range'      => [
+					'desktop' => [
+						'min'  => 1,
+						'max'  => 6,
+						'step' => 1,
+					],
+					'tablet'  => [
+						'min'  => 1,
+						'max'  => 4,
+						'step' => 1,
+					],
+					'mobile'  => [
+						'min'  => 1,
+						'max'  => 3,
+						'step' => 1,
+					],
+				],
+				'condition'  => [
+					'quantity!' => '',
+				],
+				'render_type' => 'template',
 			]
 		);
 
 		$this->end_controls_section();
 	}
 
-	protected function render() {
+	protected function render()
+	{
 		$settings = $this->get_settings_for_display();
+		$quantity = $settings['quantity'];
+
+		$tablet = isset($settings['tablet']) && $settings['tablet'] > 0 ? $settings['tablet'] : 4;
+		$mobile = isset($settings['mobile']) && $settings['mobile'] > 0 ? $settings['mobile'] : 3;
+
+		$inline_css = "
+        .team-member {
+            flex: 0 0 calc(16.666666666667% - 20px);
+            margin: 10px;
+        }
+
+        @media (min-width: 992px) {
+            .team-member {
+                flex: 0 0 calc(" . (100 / $quantity) . "% - 20px);
+                margin: 10px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .team-member {
+                flex: 0 0 calc(" . (100 / $tablet) . "% - 20px);
+                margin: 10px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .team-member {
+                flex: 0 0 calc(" . (100 / $mobile) . "% - 20px);
+                margin: 10px;
+            }
+        }
+    ";
+
+		echo '<style>' . $inline_css . '</style>';
 
 		echo '<div class="our-team-widget">';
 
-		echo '<div class="team-row">';
-		foreach ($settings['team_members'] as $member) {
+		echo '<div class="team-row" style="display: flex; flex-wrap: wrap;">';
+		foreach ($settings['team_members'] as $index => $member) {
 			echo '<div class="team-member">';
 
 			echo '<img src="' . esc_url($member['member_Image']['url']) . '" alt="' . esc_attr($member['member_text']) . '">';
@@ -143,5 +164,4 @@ class Elementor_Our_Team_Widget extends \Elementor\Widget_Base
 
 		echo '</div>';
 	}
-
 }
