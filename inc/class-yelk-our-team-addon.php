@@ -1,31 +1,28 @@
 <?php
-if (!class_exists('Yelk_Our_Team_Addon')) {
-	class Yelk_Our_Team_Addon
-	{
-		public function register()
-		{
+if ( ! class_exists( 'Yelk_Our_Team_Addon' ) ) {
+	class Yelk_Our_Team_Addon {
+		public function register() {
 			add_action(
 				'elementor/widgets/widgets_registered',
-				array($this, 'register_our_team_widget')
+				array(
+					$this,
+					'register_our_team_widget',
+				)
 			);
 		}
 
-		public function activation()
-		{
+		public function activation() {
 			flush_rewrite_rules();
 		}
 
-		public function deactivation()
-		{
+		public function deactivation() {
 			flush_rewrite_rules();
 		}
 
-		public function register_our_team_widget()
-		{
-			require_once(YELK_OT_INC_PATH . 'widgets/our-team-widget.php');
+		public function register_our_team_widget() {
+			require_once( YELK_OT_INC_PATH . 'widgets/our-team-widget.php' );
 
-			\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \Elementor_Our_Team_Widget());
+			\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new \Elementor_Our_Team_Widget() );
 		}
 	}
 }
-
